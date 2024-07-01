@@ -6,10 +6,15 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db
+from api.models import db, User
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+
+
+
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+
 
 # from models import Person
 
@@ -18,6 +23,10 @@ static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = os.getenv("my_key")   # This should be unique
+jwt = JWTManager(app)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -58,14 +67,14 @@ def sitemap():
 
 # any other endpoint will try to serve it like a static file
 
+@app.route('/user', methods = ['GET'])
+def handle_hello():
+    response_body = {
+        "msg": "Hello, this is response from GET /user"
+    }
+    return jsonify(response_body), 200
 
-@app.route('/<path:path>', methods=['GET'])
-def serve_any_other_file(path):
-    if not os.path.isfile(os.path.join(static_file_dir, path)):
-        path = 'index.html'
-    response = send_from_directory(static_file_dir, path)
-    response.cache_control.max_age = 0  # avoid cache memory
-    return response
+
 
 
 # this only runs if `$ python src/main.py` is executed
