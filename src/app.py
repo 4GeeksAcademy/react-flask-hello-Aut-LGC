@@ -10,12 +10,14 @@ from api.models import db, User
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
-
+from flask import Flask
+from flask_cors import CORS
 
 
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
-
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -25,7 +27,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 # Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = os.getenv("my_key")   # This should be unique
+app.config["JWT_SECRET_KEY"] = os.getenv("ArrozPatchuchu")   # This should be unique
 jwt = JWTManager(app)
 
 # database condiguration

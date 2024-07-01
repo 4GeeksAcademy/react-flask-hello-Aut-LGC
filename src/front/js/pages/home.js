@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
-import "../../styles/login.css";
+//import "../../styles/login.css";
 import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
